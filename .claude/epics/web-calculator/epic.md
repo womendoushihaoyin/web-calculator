@@ -2,9 +2,10 @@
 name: web-calculator
 status: backlog
 created: 2025-10-20T13:38:56Z
+updated: 2025-10-20T14:01:27Z
 progress: 0%
 prd: .claude/prds/web-calculator.md
-github: [Will be updated when synced to GitHub]
+github: https://github.com/womendoushihaoyin/web-calculator/issues/1
 ---
 
 # Epic: web-calculator
@@ -423,37 +424,19 @@ button.operator:hover {
 
 ## Tasks Created
 
-- [ ] 001.md - 项目初始化 (parallel: true, size: XS, 0.5h)
-- [ ] 002.md - HTML 结构开发 (parallel: true, size: S, 1h)
-- [ ] 003.md - CSS 样式实现 (parallel: true, size: M, 2-3h)
-- [ ] 004.md - 核心 JavaScript 逻辑 (parallel: false, size: L, 4-5h)
-- [ ] 005.md - 键盘支持 (parallel: true, size: S, 1-2h)
-- [ ] 006.md - 错误处理与边界条件 (parallel: true, size: M, 2-3h)
-- [ ] 007.md - 跨浏览器兼容性测试 (parallel: true, size: M, 2-3h)
-- [ ] 008.md - 移动端优化与测试 (parallel: true, size: M, 3-4h)
-- [ ] 009.md - 文档编写 (parallel: true, size: M, 2-3h)
-- [ ] 010.md - 部署发布 (parallel: false, size: S, 1-2h)
+- [ ] #2 - 项目初始化 (parallel: true)
+- [ ] #3 - HTML 结构开发 (parallel: true)
+- [ ] #4 - CSS 样式实现 (parallel: true)
+- [ ] #5 - 核心 JavaScript 逻辑 (parallel: false)
+- [ ] #6 - 键盘支持 (parallel: true)
+- [ ] #7 - 错误处理与边界条件 (parallel: true)
+- [ ] #8 - 跨浏览器兼容性测试 (parallel: true)
+- [ ] #9 - 移动端优化与测试 (parallel: true)
+- [ ] #10 - 文档编写 (parallel: true)
+- [ ] #11 - 部署发布 (parallel: false)
 
 **任务统计**:
 - **总任务数**: 10 个
-- **并行任务**: 7 个 (001, 002, 003, 005, 006, 007, 008, 009)
-- **串行任务**: 3 个 (004, 010)
+- **并行任务**: 7 个 (002, 003, 004, 006, 007, 008, 009, 010)
+- **串行任务**: 3 个 (005, 011)
 - **总预估工作量**: 19.5-28.5 小时 (约 2.5-3.5 个工作日)
-
-**依赖关系图**:
-```
-001 (项目初始化)
-  ├─→ 002 (HTML 结构) ──→ 003 (CSS 样式) ─┬─→ 008 (移动端优化)
-  │                        │              │
-  │                        └──→ 004 (核心 JS) ─┬─→ 005 (键盘支持)
-  │                                            ├─→ 006 (错误处理)
-  │                                            └─→ 007 (跨浏览器测试)
-  │                                                  │
-  └─→ 009 (文档编写) ───────────────────────────────┴─→ 010 (部署发布)
-```
-
-**执行建议**:
-- **阶段 1** (并行): 001 + 002 + 003 同时进行
-- **阶段 2** (串行): 004 完成后触发 005、006
-- **阶段 3** (并行): 005、006、007、008 并行测试
-- **阶段 4** (串行): 009 完成后执行 010 部署
