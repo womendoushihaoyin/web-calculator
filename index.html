@@ -22,6 +22,12 @@
       background: rgba(255, 255, 255, 0.3);
       border-radius: 2px;
     }
+
+    /* 键盘触发的视觉反馈 (Task 6 新增) */
+    button.active {
+      transform: scale(0.95);
+      background: #cbd5e0 !important;
+    }
   </style>
 </head>
 <body>
@@ -254,6 +260,73 @@
 
     // 页面加载时初始化显示
     updateDisplay();
+
+    // 12. 键盘事件映射表
+    const keyMap = {
+      '0': () => inputDigit('0'),
+      '1': () => inputDigit('1'),
+      '2': () => inputDigit('2'),
+      '3': () => inputDigit('3'),
+      '4': () => inputDigit('4'),
+      '5': () => inputDigit('5'),
+      '6': () => inputDigit('6'),
+      '7': () => inputDigit('7'),
+      '8': () => inputDigit('8'),
+      '9': () => inputDigit('9'),
+      '.': () => inputDecimal(),
+      '+': () => setOperator('+'),
+      '-': () => setOperator('-'),
+      '*': () => setOperator('×'),
+      '/': () => setOperator('÷'),
+      'Enter': () => calculate(),
+      '=': () => calculate(),
+      'Backspace': () => deleteLastDigit(),
+      'Delete': () => deleteLastDigit(),
+      'Escape': () => resetCalculator(),
+      'c': () => resetCalculator(),
+      'C': () => resetCalculator()
+    };
+
+    // 13. 键盘事件监听器
+    document.addEventListener('keydown', (event) => {
+      const action = keyMap[event.key];
+
+      if (action) {
+        event.preventDefault(); // 阻止默认行为
+        action();
+
+        // 添加视觉反馈 (高亮对应按钮)
+        highlightButton(event.key);
+      }
+    });
+
+    // 14. 按钮高亮反馈函数
+    function highlightButton(key) {
+      let selector;
+
+      if (/^[0-9]$/.test(key)) {
+        selector = `[data-number="${key}"]`;
+      } else if (key === '.') {
+        selector = '[data-action="decimal"]';
+      } else if (['+', '-', '×', '÷'].includes(key)) {
+        const operator = key === '*' ? '×' : key === '/' ? '÷' : key;
+        selector = `[data-operator="${operator}"]`;
+      } else if (key === 'Enter' || key === '=') {
+        selector = '[data-action="equals"]';
+      } else if (key === 'Backspace' || key === 'Delete') {
+        selector = '[data-action="delete"]';
+      } else if (key === 'Escape' || key.toLowerCase() === 'c') {
+        selector = '[data-action="clear"]';
+      }
+
+      if (selector) {
+        const button = document.querySelector(selector);
+        if (button) {
+          button.classList.add('active');
+          setTimeout(() => button.classList.remove('active'), 100);
+        }
+      }
+    }
   </script>
 </body>
 </html>
