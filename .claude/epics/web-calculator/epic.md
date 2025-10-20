@@ -1,9 +1,9 @@
 ---
 name: web-calculator
-status: backlog
+status: completed
 created: 2025-10-20T13:38:56Z
-updated: 2025-10-20T14:01:27Z
-progress: 0%
+updated: 2025-10-20T15:30:00Z
+progress: 100%
 prd: .claude/prds/web-calculator.md
 github: https://github.com/womendoushihaoyin/web-calculator/issues/1
 ---
