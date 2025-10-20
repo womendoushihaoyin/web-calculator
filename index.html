@@ -6,6 +6,22 @@
   <title>Web Calculator - 网页计算器</title>
   <style>
     /* CSS 样式将在 Task 004 中添加 */
+
+    /* 显示区溢出处理 (Task 7 新增) */
+    .display {
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: thin;
+    }
+
+    .display::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .display::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
@@ -54,12 +70,18 @@
       waitingForNewValue: false
     };
 
-    // 2. 数字输入处理
+    // 2. 数字输入处理 (增强: 添加最大长度限制)
     function inputDigit(digit) {
+      const MAX_LENGTH = 15; // 最大输入长度限制
+
       if (calculator.waitingForNewValue) {
         calculator.currentValue = String(digit);
         calculator.waitingForNewValue = false;
       } else {
+        // 检查是否超过最大长度
+        if (calculator.currentValue.length >= MAX_LENGTH) {
+          return; // 超过最大长度,忽略输入
+        }
         calculator.currentValue =
           calculator.currentValue === '0'
             ? String(digit)
@@ -68,13 +90,16 @@
       updateDisplay();
     }
 
-    // 3. 小数点输入
+    // 3. 小数点输入 (增强: 处理等待新输入状态)
     function inputDecimal() {
       if (calculator.waitingForNewValue) {
-        calculator.currentValue = '0.';
+        calculator.currentValue = '0.'; // 等待新输入时,设为 '0.'
         calculator.waitingForNewValue = false;
       } else if (!calculator.currentValue.includes('.')) {
         calculator.currentValue += '.';
+      } else {
+        // 已有小数点,忽略重复输入 (无需提示)
+        return;
       }
       updateDisplay();
     }
@@ -96,11 +121,12 @@
       updateDisplay();
     }
 
-    // 5. 计算函数
+    // 5. 计算函数 (增强: 添加 isNaN 检查、科学计数法处理、优化除零提示)
     function performCalculation() {
       const prev = parseFloat(calculator.previousValue);
       const current = parseFloat(calculator.currentValue);
 
+      // 检查数值有效性
       if (isNaN(prev) || isNaN(current)) return current;
 
       let result;
@@ -116,7 +142,8 @@
           break;
         case '÷':
           if (current === 0) {
-            alert('除数不能为零');
+            // 优化除零错误提示 (使用友好的红色提示)
+            showError('除数不能为零');
             resetCalculator();
             return 0;
           }
@@ -124,6 +151,11 @@
           break;
         default:
           return current;
+      }
+
+      // 处理大数和小数显示 (使用科学计数法)
+      if (Math.abs(result) > 1e15 || (Math.abs(result) < 1e-6 && result !== 0)) {
+        return parseFloat(result.toExponential(6));
       }
 
       return parseFloat(result.toFixed(6));
@@ -149,12 +181,16 @@
       updateDisplay();
     }
 
-    // 8. 退格功能
+    // 8. 退格功能 (增强: 处理等待新输入状态,确保不会为空)
     function deleteLastDigit() {
+      if (calculator.waitingForNewValue) {
+        return; // 等待新输入时不允许退格
+      }
+
       if (calculator.currentValue.length > 1) {
         calculator.currentValue = calculator.currentValue.slice(0, -1);
       } else {
-        calculator.currentValue = '0';
+        calculator.currentValue = '0'; // 确保不会为空
       }
       updateDisplay();
     }
@@ -165,7 +201,21 @@
       display.textContent = calculator.currentValue;
     }
 
-    // 10. 事件监听 (事件委托)
+    // 10. 友好的错误提示函数 (新增: 红色显示 2 秒后恢复)
+    function showError(message) {
+      const display = document.getElementById('display');
+      const originalValue = display.textContent;
+
+      display.textContent = message;
+      display.style.color = '#e53e3e'; // 红色错误提示
+
+      setTimeout(() => {
+        display.style.color = '#ffffff'; // 恢复白色
+        display.textContent = originalValue;
+      }, 2000); // 2 秒后恢复
+    }
+
+    // 11. 事件监听 (事件委托)
     document.querySelector('.buttons').addEventListener('click', (event) => {
       const { target } = event;
 
