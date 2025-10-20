@@ -41,7 +41,11 @@
       "WebFetch(domain:github.com)",
       "WebSearch",
       "Bash(dir:*)",
-      "Read(//d/**)"
+      "Read(//d/**)",
+      "Bash(chmod:*)",
+      "Bash(/tmp/create-tasks.sh)",
+      "Bash(for i in 4 6 7 8 9 10)",
+      "Bash(do echo \"=== Task #$i ===\" head -10 .claude/epics/web-calculator/$i.md)"
     ]
   }
 }
