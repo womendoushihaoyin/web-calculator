@@ -46,7 +46,164 @@
   </div>
 
   <script>
-    // JavaScript 逻辑将在 Task 005 中添加
+    // 1. 状态管理对象
+    const calculator = {
+      currentValue: '0',
+      previousValue: null,
+      operator: null,
+      waitingForNewValue: false
+    };
+
+    // 2. 数字输入处理
+    function inputDigit(digit) {
+      if (calculator.waitingForNewValue) {
+        calculator.currentValue = String(digit);
+        calculator.waitingForNewValue = false;
+      } else {
+        calculator.currentValue =
+          calculator.currentValue === '0'
+            ? String(digit)
+            : calculator.currentValue + digit;
+      }
+      updateDisplay();
+    }
+
+    // 3. 小数点输入
+    function inputDecimal() {
+      if (calculator.waitingForNewValue) {
+        calculator.currentValue = '0.';
+        calculator.waitingForNewValue = false;
+      } else if (!calculator.currentValue.includes('.')) {
+        calculator.currentValue += '.';
+      }
+      updateDisplay();
+    }
+
+    // 4. 运算符设置
+    function setOperator(nextOperator) {
+      const inputValue = parseFloat(calculator.currentValue);
+
+      if (calculator.previousValue === null) {
+        calculator.previousValue = inputValue;
+      } else if (calculator.operator) {
+        const result = performCalculation();
+        calculator.currentValue = String(result);
+        calculator.previousValue = result;
+      }
+
+      calculator.waitingForNewValue = true;
+      calculator.operator = nextOperator;
+      updateDisplay();
+    }
+
+    // 5. 计算函数
+    function performCalculation() {
+      const prev = parseFloat(calculator.previousValue);
+      const current = parseFloat(calculator.currentValue);
+
+      if (isNaN(prev) || isNaN(current)) return current;
+
+      let result;
+      switch (calculator.operator) {
+        case '+':
+          result = prev + current;
+          break;
+        case '-':
+          result = prev - current;
+          break;
+        case '×':
+          result = prev * current;
+          break;
+        case '÷':
+          if (current === 0) {
+            alert('除数不能为零');
+            resetCalculator();
+            return 0;
+          }
+          result = prev / current;
+          break;
+        default:
+          return current;
+      }
+
+      return parseFloat(result.toFixed(6));
+    }
+
+    // 6. 等号计算
+    function calculate() {
+      if (calculator.operator && !calculator.waitingForNewValue) {
+        calculator.currentValue = String(performCalculation());
+        calculator.previousValue = null;
+        calculator.operator = null;
+        calculator.waitingForNewValue = true;
+        updateDisplay();
+      }
+    }
+
+    // 7. 清除功能
+    function resetCalculator() {
+      calculator.currentValue = '0';
+      calculator.previousValue = null;
+      calculator.operator = null;
+      calculator.waitingForNewValue = false;
+      updateDisplay();
+    }
+
+    // 8. 退格功能
+    function deleteLastDigit() {
+      if (calculator.currentValue.length > 1) {
+        calculator.currentValue = calculator.currentValue.slice(0, -1);
+      } else {
+        calculator.currentValue = '0';
+      }
+      updateDisplay();
+    }
+
+    // 9. 显示区更新
+    function updateDisplay() {
+      const display = document.getElementById('display');
+      display.textContent = calculator.currentValue;
+    }
+
+    // 10. 事件监听 (事件委托)
+    document.querySelector('.buttons').addEventListener('click', (event) => {
+      const { target } = event;
+
+      if (!target.matches('button')) return;
+
+      // 数字按钮
+      if (target.dataset.number !== undefined) {
+        inputDigit(target.dataset.number);
+        return;
+      }
+
+      // 运算符按钮
+      if (target.dataset.operator !== undefined) {
+        setOperator(target.dataset.operator);
+        return;
+      }
+
+      // 功能按钮
+      if (target.dataset.action !== undefined) {
+        switch (target.dataset.action) {
+          case 'clear':
+            resetCalculator();
+            break;
+          case 'delete':
+            deleteLastDigit();
+            break;
+          case 'decimal':
+            inputDecimal();
+            break;
+          case 'equals':
+            calculate();
+            break;
+        }
+      }
+    });
+
+    // 页面加载时初始化显示
+    updateDisplay();
   </script>
 </body>
 </html>
